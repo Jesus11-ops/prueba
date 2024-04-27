@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Navegación con Ubicación en Tiempo Real</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var map = L.map('map').setView([8.94617, -75.44275], 10); // Ubicación inicial (Sahagun)
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            var userLocationMarker = L.marker(); // Marcador para la ubicación del usuario
+
+            // Obtener ubicación del usuario y actualizar en tiempo real
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(function(position) {
+                    var userLat = position.coords.latitude;
+                    var userLng = position.coords.longitude;
+
+                    // Actualizar la posición del marcador de usuario
+                    userLocationMarker.setLatLng([userLat, userLng]).addTo(map);
+
+                    // Destino preestablecido
+                    var destination = [9.294, -75.395]; // Coordenadas del destino preestablecido
+
+                    // Calcular y trazar la ruta entre la ubicación del usuario y el destino
+                    L.Routing.control({
+                        waypoints: [
+                            L.latLng(userLat, userLng),
+                            L.latLng(destination[0], destination[1])
+                        ],
+                        routeWhileDragging: true
+                    }).addTo(map);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
